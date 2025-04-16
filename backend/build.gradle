@@ -3,7 +3,9 @@ plugins {
 	id 'org.springframework.boot' version '3.4.4'
 	id 'io.spring.dependency-management' version '1.1.7'
 }
-
+tasks.named('bootJar') {
+    mainClass.set('com.example.DemoApplication')
+}
 group = 'com.app'
 version = '0.0.1-SNAPSHOT'
 
