@@ -12,7 +12,6 @@ pipeline {
                 stage("Build backend") {
                     steps {
                         dir("backend") {
-                            sh "echo $JAVA_HOME"
                             sh "gradle build -x test"
                         }
                     }
