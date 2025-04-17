@@ -4,6 +4,7 @@ pipeline {
     tools {
         gradle 'gradle813'
         nodejs 'node23110'
+        jdk 'jdk21'  
     }
 
     stages {
