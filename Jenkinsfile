@@ -52,5 +52,24 @@ pipeline {
                 }
             }
         }
+        stage('Unit Tests') {
+            parallel {
+                stage('Backend test') {
+                    steps {
+                      dir("backend"){
+                        sh "gradle test"
+                        }
+                    }
+                }
+
+                stage('frontend test') {
+                    steps {
+                      dir("frontend"){
+                        sh "ng test"
+                      }
+                    }
+                }
+            }
+        }
     }
 }
