@@ -24,11 +24,21 @@ pipeline {
                     agent { label 'ubuntu-java21-docker' }
                     steps {
                         dir("frontend") {
-                            sh "npm install"
+                            sh "npm install --no-audit"
                             sh "npm install -g @angular/cli"
                             sh "ng build"
                         }
                     }
+                }
+            }
+        }
+        stage('Audits'){
+          stage('Owasp Depencency Checker'){
+              steps{
+                  dependencyCheck additionalArguments: '''--scan ./
+                            --out ./
+                            --format ALL
+                            --prettyPrint''', odcInstallation: 'owasp-depche-12.1.1'
                 }
             }
         }
