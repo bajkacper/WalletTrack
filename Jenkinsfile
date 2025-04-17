@@ -2,7 +2,7 @@ pipeline {
   agent any;
   tools{
       gradle "gradle813"
-      node "node23110"
+      nodejs "node23110"
     }
 
   stages {
