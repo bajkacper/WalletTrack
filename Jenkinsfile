@@ -13,6 +13,7 @@ pipeline {
                 stage("Build backend") {
                     steps {
                         dir("backend") {
+                            sh "gradle --version"
                             sh "gradle build -x test"
                         }
                     }
