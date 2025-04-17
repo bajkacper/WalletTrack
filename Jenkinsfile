@@ -26,7 +26,6 @@ pipeline {
                         dir("frontend") {
                             sh "npm install --no-audit"
                             sh "npm install -g @angular/cli"
-                            sh "ng --version"
                             sh "ng build"
                         }
                     }
