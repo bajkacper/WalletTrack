@@ -47,7 +47,10 @@ pipeline {
 
                 stage('Npm audit') {
                     steps {
-                        sh "npm audit --audit-level=critical echo $1"
+                        sh '''
+                        npm audit --audit-level=critical 
+                        echo $1
+                       ''' 
                     }
                 }
             }
