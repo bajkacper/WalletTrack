@@ -1,10 +1,10 @@
 pipeline {
-    agent any; 
+    agent any
 
     tools {
         gradle 'gradle813'
         nodejs 'node23110'
-        jdk 'jdk21'  
+        jdk 'jdk21'
     }
 
     stages {
@@ -19,33 +19,39 @@ pipeline {
                         }
                     }
                 }
-                
+
                 stage("Build frontend") {
                     agent { label 'ubuntu-java21-docker' }
                     steps {
                         dir("frontend") {
                             sh "npm install --no-audit"
                             sh "npm install -g @angular/cli"
+                            sh "ng --version"
                             sh "ng build"
                         }
                     }
                 }
             }
         }
-        stage('Audits'){
-          parallel{
-          stage('Owasp Depencency Checker'){
-              steps{
-                  dependencyCheck additionalArguments: '''--scan ./
-                            --out ./
-                            --format ALL
-                            --prettyPrint''', odcInstallation: 'owasp-depche-12.1.1'
+
+        stage('Audits') {
+            parallel {
+                stage('OWASP Dependency Checker') {
+                    steps {
+                        dependencyCheck additionalArguments: '''--scan ./
+                                                            --out ./
+                                                            --format ALL
+                                                            --prettyPrint''', 
+                                       odcInstallation: 'owasp-depche-12.1.1'
+                    }
+                }
+
+                stage('Npm audit') {
+                    steps {
+                        sh "npm audit"
+                    }
                 }
             }
-            stage('Npm audit'){
-              sh "npm audit"
-            }
-          }
         }
     }
 }
