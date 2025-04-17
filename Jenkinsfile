@@ -1,10 +1,14 @@
 pipeline {
   agent any;
+  tools{
+      gradle "gradle813"
+    }
 
   stages {
-    stage('Test'){
+    stage('Build Version'){
         steps{
-            sh "echo hello"
+            sh "npm --version"
+            sh "gradle --version"
           }
       }
   }
