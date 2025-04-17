@@ -1,5 +1,5 @@
 pipeline {
-    agent { label 'ubuntu-java21-docker' }
+    agent any; 
 
     tools {
         gradle 'gradle813'
@@ -14,12 +14,13 @@ pipeline {
                     steps {
                         dir("backend") {
                             sh "gradle --version"
-                            sh "gradle build -x test"
+                            sh "gradle build"
                         }
                     }
                 }
                 
                 stage("Build frontend") {
+                    agent { label 'ubuntu-java21-docker' }
                     steps {
                         dir("frontend") {
                             sh "npm install"
