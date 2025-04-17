@@ -14,6 +14,7 @@ pipeline {
                     steps {
                         dir("backend") {
                             sh "gradle --version"
+                            sh "gradle javaToolchains"
                             sh "gradle build"
                         }
                     }
