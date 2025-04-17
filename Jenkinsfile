@@ -47,10 +47,12 @@ pipeline {
 
                 stage('Npm audit') {
                     steps {
+                      dir('frontend'){
                         sh '''
                         npm audit --audit-level=critical 
                         echo $1
                        ''' 
+                        }
                     }
                 }
             }
