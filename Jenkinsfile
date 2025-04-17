@@ -33,6 +33,7 @@ pipeline {
             }
         }
         stage('Audits'){
+          parallel{
           stage('Owasp Depencency Checker'){
               steps{
                   dependencyCheck additionalArguments: '''--scan ./
@@ -41,6 +42,10 @@ pipeline {
                             --prettyPrint''', odcInstallation: 'owasp-depche-12.1.1'
                 }
             }
+            stage('Npm audit'){
+              sh "npm audit"
+            }
+          }
         }
     }
 }
