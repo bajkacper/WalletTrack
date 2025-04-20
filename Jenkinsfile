@@ -106,8 +106,8 @@ pipeline {
                     steps {
                         echo "Building Backend"
                         withDockerRegistry(credentialsId: 'github-credentials', url: 'https://ghcr.io/bajkacper/WalletTrack') {
-                          sh "docker build -t ghcr.io/bajkacper/WalletTrack/backend:${GIT_COMMIT} ./backend"
-                          sh "docker push ghcr.io/bajkacper/WalletTrack/backend:${GIT_COMMIT}"
+                          sh "docker build -t ghcr.io/bajkacper/wallettrack/backend:${GIT_COMMIT} ./backend"
+                          sh "docker push ghcr.io/bajkacper/wallettrack/backend:${GIT_COMMIT}"
                         }
                     }
                 }
@@ -115,8 +115,8 @@ pipeline {
                     steps {
                         echo "Building Frontend"
                         withDockerRegistry(credentialsId: 'github-credentials', url: ' https://ghcr.io/bajkacper/WalletTrack') {
-                          sh "docker build -t ghcr.io/bajkacper/WalletTrack/frontend:${GIT_COMMIT} ./frontend"
-                          sh "docker push ghcr.io/bajkacper/WalletTrack/frontend:${GIT_COMMIT}"
+                          sh "docker build -t ghcr.io/bajkacper/wallettrack/frontend:${GIT_COMMIT} ./frontend"
+                          sh "docker push ghcr.io/bajkacper/wallettrack/frontend:${GIT_COMMIT}"
                         }
                     }
                 }
