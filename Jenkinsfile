@@ -93,7 +93,7 @@ pipeline {
         stage('Test Coverage') {
             steps {
                 dir("backend") {
-                    withSonarQubeEnv() {
+                    withSonarQubeEnv("SonarQubeLocal") {
                         sh "gradle sonar"
                     }
                 }
