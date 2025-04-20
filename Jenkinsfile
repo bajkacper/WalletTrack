@@ -105,13 +105,19 @@ pipeline {
                 stage('Building Backend Image') {
                     steps {
                         echo "Building Backend"
-                        // sh "docker build -t backend-image ./backend"
+                        withDockerRegistry(credentialsId: 'github-credentials', url: 'https://ghcr.io/bajkacper/WalletTrack') {
+                          sh "docker build -t ghcr.io/bajkacper/WalletTrack/backend:${GIT_COMMIT} ./backend"
+                          sh "docker push ghcr.io/bajkacper/WalletTrack/backend:${GIT_COMMIT}"
+                        }
                     }
                 }
                 stage('Building Frontend Image') {
                     steps {
                         echo "Building Frontend"
-                        // sh "docker build -t frontend-image ./frontend"
+                        withDockerRegistry(credentialsId: 'github-credentials', url: ' https://ghcr.io/bajkacper/WalletTrack') {
+                          sh "docker build -t ghcr.io/bajkacper/WalletTrack/frontend:${GIT_COMMIT} ./frontend"
+                          sh "docker push ghcr.io/bajkacper/WalletTrack/frontend:${GIT_COMMIT}"
+                        }
                     }
                 }
             }
