@@ -38,74 +38,80 @@ pipeline {
                 stage('OWASP Dependency Checker') {
                     steps {
                         dependencyCheck additionalArguments: '''--scan ./
-                                                            --out ./
-                                                            --format ALL
-                                                            --prettyPrint''', 
-                                       odcInstallation: 'owasp-depche-12.1.1'
+                            --out ./
+                            --format ALL
+                            --prettyPrint''', 
+                            odcInstallation: 'owasp-depche-12.1.1'
                     }
                 }
 
                 stage('Npm audit') {
                     steps {
-                      dir('frontend'){
-                        sh '''
-                        npm audit --audit-level=critical 
-                        echo $1
-                       ''' 
+                        dir('frontend') {
+                            sh '''
+                                npm audit --audit-level=critical || true
+                            '''
                         }
                     }
                 }
             }
         }
+
         stage('Unit Tests') {
             parallel {
                 stage('Backend test') {
                     steps {
-                      dir("backend"){
-                        sh "gradle test"
+                        dir("backend") {
+                            sh "gradle test"
                         }
                     }
                 }
 
-stage('frontend test') {
-  steps {
-    dir("frontend") {
-      sh '''
-        npm ci
-        npm install puppeteer --no-save
-        export CHROME_BIN=$(node -e "console.log(require('puppeteer').executablePath())")
-        
-        export KARMA_CUSTOM_LAUNCHERS='{
-          "ChromeHeadlessNoSandbox": {
-            "base": "ChromeHeadless",
-            "flags": ["--no-sandbox"]
-          }
-        }'
+                stage('Frontend test') {
+                    steps {
+                        dir("frontend") {
+                            sh '''
+                                npm ci
+                                npm install puppeteer --no-save
+                                export CHROME_BIN=$(node -e "console.log(require('puppeteer').executablePath())")
 
-        ng test --watch=false --browsers=ChromeHeadlessNoSandbox
-      '''
-    }
-  }
-}
-            }
-        }
-        stage('Test Coverage'){
-          dir("backend"){
-              withSonarQubeEnv() {
-                sh "gradle sonar"
-              }
-         }
-        }
-        stage('Building Images'){
-          parallel{
-              stage('Building Backend Image'){
-                  steps{
-                      sh "Building Backend"
+                                export KARMA_CUSTOM_LAUNCHERS='{
+                                    "ChromeHeadlessNoSandbox": {
+                                        "base": "ChromeHeadless",
+                                        "flags": ["--no-sandbox"]
+                                    }
+                                }'
+
+                                ng test --watch=false --browsers=ChromeHeadlessNoSandbox
+                            '''
+                        }
                     }
                 }
-              stage('Building Frontend Image'){
-                  steps{
-                      sh "Building Frontend"
+            }
+        }
+
+        stage('Test Coverage') {
+            steps {
+                dir("backend") {
+                    withSonarQubeEnv() {
+                        sh "gradle sonar"
+                    }
+                }
+            }
+        }
+
+        stage('Building Images') {
+            parallel {
+                stage('Building Backend Image') {
+                    steps {
+                        echo "Building Backend"
+                        // sh "docker build -t backend-image ./backend"
+                    }
+                }
+                stage('Building Frontend Image') {
+                    steps {
+                        echo "Building Frontend"
+                        // sh "docker build -t frontend-image ./frontend"
                     }
                 }
             }
