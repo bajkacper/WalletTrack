@@ -2,7 +2,9 @@ plugins {
 	id 'java'
 	id 'org.springframework.boot' version '3.4.4'
 	id 'io.spring.dependency-management' version '1.1.7'
+  id "org.sonarqube" version "6.0.1.5171"
 }
+
 tasks.named('bootJar') {
     mainClass.set('com.app.WalletTrackApplication')
 }
@@ -24,7 +26,12 @@ configurations {
 repositories {
 	mavenCentral()
 }
-
+sonar {
+  properties {
+    property "sonar.projectKey", "WalletTrack"
+    property "sonar.projectName", "WalletTrack"
+  }
+}
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 	implementation 'org.springframework.boot:spring-boot-starter-security'

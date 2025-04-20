@@ -74,7 +74,15 @@ stage('frontend test') {
         npm ci
         npm install puppeteer --no-save
         export CHROME_BIN=$(node -e "console.log(require('puppeteer').executablePath())")
-        ng test --watch=false --browsers=ChromeHeadless --no-sandbox
+        
+        export KARMA_CUSTOM_LAUNCHERS='{
+          "ChromeHeadlessNoSandbox": {
+            "base": "ChromeHeadless",
+            "flags": ["--no-sandbox"]
+          }
+        }'
+
+        ng test --watch=false --browsers=ChromeHeadlessNoSandbox
       '''
     }
   }
@@ -82,9 +90,11 @@ stage('frontend test') {
             }
         }
         stage('Test Coverage'){
-             steps{
-                sh "Running test Coverage"
-              } 
+          dir("backend"){
+              withSonarQubeEnv() {
+                sh "gradle sonar"
+              }
+         }
         }
         stage('Building Images'){
           parallel{
