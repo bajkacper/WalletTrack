@@ -74,11 +74,30 @@ stage('frontend test') {
         npm ci
         npm install puppeteer --no-save
         export CHROME_BIN=$(node -e "console.log(require('puppeteer').executablePath())")
-        ng test --watch=false --browsers=ChromeHeadless
+        ng test --watch=false --browsers=ChromeHeadless --no-sandbox
       '''
     }
   }
 }
+            }
+        }
+        stage('Test Coverage'){
+             steps{
+                sh "Running test Coverage"
+              } 
+        }
+        stage('Building Images'){
+          parallel{
+              stage('Building Backend Image'){
+                  steps{
+                      sh "Building Backend"
+                    }
+                }
+              stage('Building Frontend Image'){
+                  steps{
+                      sh "Building Frontend"
+                    }
+                }
             }
         }
     }
