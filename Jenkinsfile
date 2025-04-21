@@ -122,5 +122,21 @@ pipeline {
                 }
             }
         }
+        stage('Integration Testing'){
+          when {
+              changeRequest()
+            }
+            steps {
+                echo "Integration Testing when pr"
+              }
+        }
+        stage('Deploying'){
+          when {
+            branch 'main' 
+            }
+            steps {
+                echo "Should we deploy the app"
+              }
+        }
     }
 }
