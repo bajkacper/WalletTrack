@@ -7,11 +7,16 @@ on:
 jobs:
   unit-test:
     runs-on: ubuntu-latest
+    container:
+      image: gradle:8.5-jdk21
     steps:
       - name: checkout
         uses: actions/checkout@v3
       - name: check java and gradle version
-        run: |
+        run: 
           java --version
           gradle --version
+      - name: unit test
+        run: gradle test
+  
 
