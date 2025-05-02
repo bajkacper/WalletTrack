@@ -1,0 +1,17 @@
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - "backend/**" 
+
+jobs:
+  unit-test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout
+        uses: actions/checkout@v3
+      - name: check java and gradle version
+        run: |
+          java --version
+          gradle --version
+
