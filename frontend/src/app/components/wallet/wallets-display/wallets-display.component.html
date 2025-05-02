@@ -1,0 +1,24 @@
+<div class="wallets-container">
+    <header class="header">
+      <h1 class="title">Your Wallets</h1>
+      <button mat-raised-button color="primary" routerLink="/add-wallet">Add Wallet</button>
+    </header>
+  
+    <section class="wallets-list">
+      <div *ngFor="let wallet of wallets" class="wallet-card">
+        <h3>{{ wallet.name }}</h3>
+        <div class="total">
+          <div class="label">Total Balance</div>
+          <div class="value">{{ wallet.balance | currency }}</div>
+          <div class="balance" [ngClass]="{'positive': wallet.change >= 0, 'negative': wallet.change < 0}">
+            {{ wallet.change | currency }}
+          </div>
+        </div>
+        <div class="button-container">
+          <button mat-raised-button class="mr-1" color="primary" (click)="onButtonClick('Add Funds', wallet)">Add Funds</button>
+          <button mat-raised-button class="mr-1" color="accent" (click)="onButtonClick('Transfer', wallet)">Transfer</button>
+          <button mat-raised-button class="mr-1" color="warn" (click)="onButtonClick('History', wallet)">History</button>
+        </div>
+      </div>
+    </section>
+  </div>
