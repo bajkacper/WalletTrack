@@ -1,0 +1,32 @@
+<div class="profile-settings-container">
+  <h2>Profile Settings</h2>
+  <form [formGroup]="profileForm" (ngSubmit)="onSubmit()">
+    <mat-form-field appearance="fill" class="full-width">
+      <mat-label>First Name</mat-label>
+      <input matInput formControlName="firstName" placeholder="Enter your first name" />
+      @if(profileForm.get('firstName')?.invalid && profileForm.get('firstName')?.touched) {
+        <mat-error>First name is required.</mat-error>
+      }
+    </mat-form-field>
+
+    <mat-form-field appearance="fill" class="full-width">
+      <mat-label>Last Name</mat-label>
+      <input matInput formControlName="lastName" placeholder="Enter your last name" />
+      @if(profileForm.get('lastName')?.invalid && profileForm.get('lastName')?.touched) {
+        <mat-error>Last name is required.</mat-error>
+      }
+    </mat-form-field>
+
+    <mat-form-field appearance="fill" class="full-width">
+      <mat-label>Password</mat-label>
+      <input matInput type="password" formControlName="password" placeholder="Enter a new password" />
+      @if(profileForm.get('password')?.invalid && profileForm.get('password')?.touched) {
+        <mat-error>Password must be at least 6 characters long.</mat-error>
+      }
+    </mat-form-field>
+
+    <button mat-raised-button color="primary" type="submit" [disabled]="profileForm.invalid">
+      Save Changes
+    </button>
+  </form>
+</div>
