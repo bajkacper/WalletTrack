@@ -1,6 +1,3 @@
-CREATE DATABASE wallet_track;
-\c wallet_track -- jeśli używasz PostgreSQL, przełącza na nową bazę
-
 -- Users
 CREATE TABLE users (
     id SERIAL PRIMARY KEY,
@@ -47,3 +44,16 @@ CREATE TABLE transactions (
     transaction_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (wallet_id) REFERENCES wallets(id) ON DELETE CASCADE
 );
+
+
+CREATE OR REPLACE FUNCTION validate_email(p_email VARCHAR)
+RETURNS BOOLEAN AS $$
+BEGIN
+    IF p_email ~* '^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$' THEN
+        RETURN TRUE;
+    ELSE
+        RAISE EXCEPTION 'Invalid email format';
+    END IF;
+    RETURN FALSE;
+END;
+$$ LANGUAGE plpgsql;

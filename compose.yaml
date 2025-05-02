@@ -1,0 +1,13 @@
+services:
+  db:
+    image: postgres:15
+    container_name: wallet_db
+    restart: always
+    environment:
+      POSTGRES_DB: wallet_track
+      POSTGRES_USER: wallet_user
+      POSTGRES_PASSWORD: wallet_pass
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./db/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
