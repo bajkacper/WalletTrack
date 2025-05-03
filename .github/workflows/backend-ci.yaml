@@ -117,7 +117,7 @@ jobs:
         with:
           image-ref: 'ghcr.io/${{ env.REPO_OWNER }}/wallettrack/backend:${{ github.sha }}'
           format: 'sarif'
-          output: 'trivy-results-${{ runner.os }}.sarif'
+          output: 'trivy-results-${{ runner.os }}-${{ runner.arch }}.sarif'
           ignore-unfixed: true
           vuln-type: 'os,library'
           severity: 'CRITICAL,HIGH'
@@ -125,7 +125,7 @@ jobs:
       - name: Upload Trivy SARIF to GitHub Security tab
         uses: github/codeql-action/upload-sarif@v3
         with:
-          sarif_file: trivy-results-${{ runner.os }}.sarif
+          sarif_file: trivy-results-${{ runner.os }}-${{ runner.arch }}.sarif
   docker-arm64:
     needs: unit-test
     permissions:
@@ -157,7 +157,7 @@ jobs:
         with:
           image-ref: 'ghcr.io/${{ env.REPO_OWNER }}/wallettrack/backend:${{ github.sha }}'
           format: 'sarif'
-          output: 'trivy-results-${{ runner.os }}.sarif'
+          output: 'trivy-results-${{ runner.os }}-${{ runner.arch }}.sarif'
           ignore-unfixed: true
           vuln-type: 'os,library'
           severity: 'CRITICAL,HIGH'
@@ -165,9 +165,9 @@ jobs:
       - name: Upload Trivy SARIF to GitHub Security tab
         uses: github/codeql-action/upload-sarif@v3
         with:
-          sarif_file: trivy-results-${{ runner.os }}.sarif
+          sarif_file: trivy-results-${{ runner.os }}-${{ runner.arch }}.sarif
 
-  configure-kubectl:
+  deploy-to-development:
         runs-on: self-hosted
         needs: [docker-arm64,docker-amd64]
         environment:
