@@ -89,7 +89,7 @@ jobs:
         with:
           context: backend
           push: true
-          tags: wallettrack/backend:${{ github.sha }}
+          tags: ghcr.io/${{github.repository_owner}}/wallettrack/backend:${{ github.sha }}
 
 
   
