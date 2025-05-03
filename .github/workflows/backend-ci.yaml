@@ -67,6 +67,8 @@ jobs:
           path: ./backend/build/reports/tests/test
   docker:
     needs: unit-test
+    permissions:
+      packages: write
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
