@@ -87,7 +87,7 @@ jobs:
         with:
           context: backend
           push: false
-          tags: ${{ github.repository_owner}}/${{ github.repository}}-backend:${{ github.sha}}
+          tags: wallettrack/backend:${{ github.sha }}
 
 
   
