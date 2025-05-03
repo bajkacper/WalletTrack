@@ -9,8 +9,6 @@ jobs:
         steps:
             - name: Set up kubectl
               uses: azure/setup-kubectl@v4
-            - name: Check installation
-              run: kubectl version
             - name: Configure kubeconfig
               uses: azure/k8s-set-context@v4
               with:
