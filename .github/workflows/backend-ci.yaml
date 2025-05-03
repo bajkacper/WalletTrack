@@ -37,7 +37,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ubuntu-latest]
+        os: [ubuntu-24.04]
         architecture: [x64, arm64]
       fail-fast: false
     container:
@@ -94,7 +94,7 @@ jobs:
     needs: unit-test
     permissions:
       packages: write
-    runs-on: ubuntu-latest-arm
+    runs-on: ubuntu-24.04-arm
     steps:
       - name: Checkout
         uses: actions/checkout@v3
