@@ -9,6 +9,9 @@ jobs:
     runs-on: ubuntu-latest
     container:
       image: gradle:8.5-jdk21
+    defaults:
+      run:
+        working-directory: backend
     steps:
       - name: checkout
         uses: actions/checkout@v3
