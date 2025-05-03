@@ -30,7 +30,7 @@ jobs:
           path: |
             ./backend/.gradle
             ./backend/build
-          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+          key: ${{ matrix.os }}-${{ matrix.architecture }}-gradle-$GITHUB_SHA
 
   unit-test:
     needs: build
@@ -55,7 +55,7 @@ jobs:
           path: |
             ./backend/.gradle
             ./backend/build
-          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+          key: ${{ matrix.os }}-${{ matrix.architecture }}-gradle-$GITHUB_SHA
 
       - name: Unit Test
         run: gradle test
