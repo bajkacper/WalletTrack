@@ -5,6 +5,20 @@ on:
       - "backend/**" 
 
 jobs:
+  build:
+    runs-on: ubuntu-latest
+    container:
+      image: gradle:8.5-jdk21
+    defaults:
+      run:
+        working-directory:
+          backend
+    steps:
+      - name: checkout
+        uses: actions/chekcout@v3
+      - name: build without testing
+        run: gradle build -x test
+
   unit-test:
     runs-on: ubuntu-latest
     container:
@@ -21,5 +35,7 @@ jobs:
           gradle --version
       - name: unit test
         run: gradle test
+  
+      
   
 
