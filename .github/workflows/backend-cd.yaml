@@ -1,0 +1,14 @@
+name: Backend deploy
+on:
+  workflow_dispatch:
+jobs:
+    configure-kubectl:
+        runs-on: self-hosted
+        environment:
+            name: development
+        steps:
+            - name: Display runner name
+              run: echo "Hello"
+        
+
+    
