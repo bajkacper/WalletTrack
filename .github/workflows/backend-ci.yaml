@@ -2,39 +2,84 @@ on:
   workflow_dispatch:
   push:
     paths:
-      - "backend/**" 
+      - "backend/**"
 
 jobs:
   build:
-    runs-on: ubuntu-latest
-    container:
-      image: gradle:8.5-jdk21
-    defaults:
-      run:
-        working-directory:
-          backend
-    steps:
-      - name: checkout
-        uses: actions/chekcout@v3
-      - name: build without testing
-        run: gradle build -x test
-
-  unit-test:
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, ubuntu-20.04, windows-latest]
+        architecture: [x64, arm64]
+      fail-fast: false
     container:
       image: gradle:8.5-jdk21
     defaults:
       run:
         working-directory: backend
     steps:
-      - name: checkout
+      - name: Checkout
         uses: actions/checkout@v3
-      - name: check java and gradle version
-        run: 
+        
+      - name: Cache Gradle dependencies
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-
+        
+      - name: Build without testing
+        run: gradle build -x test
+        
+      - name: Caching Gradle dependencies after build
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-
+
+  unit-test:
+    needs: build
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, ubuntu-20.04, windows-latest]
+        architecture: [x64, arm64]
+      fail-fast: false
+    container:
+      image: gradle:8.5-jdk21
+    defaults:
+      run:
+        working-directory: backend
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        
+      - name: Cache Gradle dependencies
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-
+
+      - name: Check Java and Gradle Version
+        run: |
           java --version
           gradle --version
-      - name: unit test
+          
+      - name: Unit Test
         run: gradle test
+
+  
   
       
   
