@@ -63,8 +63,32 @@ jobs:
       - name: Archive test report
         uses: actions/upload-artifact@v4
         with:
-          name: test-report-${{ github.sha }}
+          name: test-report-${{ matrix.architecture }}-${{ github.sha }}
           path: ./backend/build/reports/tests/test
+  docker:
+    needs: unit-test
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest]
+        architecture: [x64, arm64]
+      fail-fast: false
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Login into GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.repository_owner}}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Build and Push docker image
+        uses: docker/build-push-action@v6
+        with:
+          context: backend
+          push: false
+          tags: ${{ github.repository_owner}}/${{ github.repository}}-backend:${{ github.sha}}
+
 
   
   
