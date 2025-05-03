@@ -64,7 +64,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: test-report-${{ github.sha }}
-          path: ./build/reports/tests/test
+          path: ./backend/build/reports/tests/test
 
   
   
