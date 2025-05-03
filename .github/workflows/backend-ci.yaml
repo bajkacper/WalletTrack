@@ -28,7 +28,10 @@ jobs:
       - name: Build without testing
         run: gradle build -x test
       - name: Check if there is gradle
-        run : ls ~ -a
+        run : | 
+          ls -a
+          ls -a /root
+          ls -a /root/gradle
       - name: Depcheck
         uses: dependency-check/Dependency-Check_Action@main
         id: Depcheck
@@ -165,6 +168,7 @@ jobs:
 
   configure-kubectl:
         runs-on: self-hosted
+        needs: [docker-arm64,docker-amd64]
         environment:
             name: development
         steps:
