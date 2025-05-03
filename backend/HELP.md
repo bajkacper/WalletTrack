@@ -22,4 +22,4 @@ The following guides illustrate how to use some features concretely:
 * [Authenticating a User with LDAP](https://spring.io/guides/gs/authenticating-ldap/)
 * [Accessing Data with JPA](https://spring.io/guides/gs/accessing-data-jpa/)
 
-
+### CI/CD
