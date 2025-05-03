@@ -23,15 +23,11 @@ jobs:
           path: |
             ./backend/.gradle
             ./backend/build
+            ./backend/gradle
           key: ${{ runner.os }}-gradle-${{ hashFiles('backend/build.gradle') }}
 
       - name: Build without testing
         run: gradle build -x test
-      - name: Check if there is gradle
-        run : | 
-          ls -a
-          ls -a /root
-          ls -a /root/gradle
       - name: Depcheck
         uses: dependency-check/Dependency-Check_Action@main
         id: Depcheck
@@ -55,6 +51,7 @@ jobs:
           path: |
             ./backend/.gradle
             ./backend/build
+            ./backend/gradle
           key:  ${{runner.os}}-gradle-${{ hashFiles('backend/build.gradle')}}
 
   unit-test:
@@ -75,6 +72,7 @@ jobs:
           path: |
             ./backend/.gradle
             ./backend/build
+            ./backend/gradle
           key: ${{runner.os}}-gradle-${{ hashFiles('backend/build.gradle') }}
 
       - name: Unit Test
