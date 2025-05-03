@@ -30,7 +30,7 @@ jobs:
           path: |
             ./backend/.gradle
             ./backend/build
-          key: ${{ matrix.os }}-${{ matrix.architecture }}-gradle-$GITHUB_SHA
+          key: ${{ matrix.os }}-${{ matrix.architecture }}-gradle-${{ github.sha}}
 
   unit-test:
     needs: build
@@ -55,7 +55,7 @@ jobs:
           path: |
             ./backend/.gradle
             ./backend/build
-          key: ${{ matrix.os }}-${{ matrix.architecture }}-gradle-$GITHUB_SHA
+          key: ${{ matrix.os }}-${{ matrix.architecture }}-gradle-${{ github.sha }}
 
       - name: Unit Test
         run: gradle test
