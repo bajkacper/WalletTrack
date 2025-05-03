@@ -7,8 +7,14 @@ jobs:
         environment:
             name: development
         steps:
-            - name: Display runner name
-              run: echo "Hello"
+            - name: Set up kubectl
+              uses: azure/setup-kubectl@v4
+            - name: Set up kubeconfig 
+              run: |
+               echo "${{ secrets.KUBECONFIG }}" | base64 -d > $HOME/.kube/config
+               chmod 600 $HOME/.kube/config
+            - name: Test connection
+              run: kubectl get nodes
         
 
     
