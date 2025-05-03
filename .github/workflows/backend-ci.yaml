@@ -1,3 +1,4 @@
+name: Backend CI/CD
 on:
   workflow_dispatch:
   push:
@@ -128,3 +129,33 @@ jobs:
           push: true
           platforms: linux/arm64
           tags: ghcr.io/${{ env.REPO_OWNER }}/wallettrack/backend:${{ github.sha }}
+     
+      - name: Run Trivy with SARIF output
+        uses: aquasecurity/trivy-action@0.28.0
+        with:
+          image-ref: 'ghcr.io/${{ env.REPO_OWNER }}/wallettrack/backend:${{ github.sha }}'
+          format: 'sarif'
+          output: 'trivy-results-${{ runner.os }}.sarif'
+          ignore-unfixed: true
+          vuln-type: 'os,library'
+          severity: 'CRITICAL,HIGH'
+        
+      - name: Upload Trivy SARIF to GitHub Security tab
+        uses: github/codeql-action/upload-sarif@v2
+        with:
+          sarif_file: trivy-results-${{ runner.os }}.sarif
+
+  configure-kubectl:
+        runs-on: self-hosted
+        environment:
+            name: development
+        steps:
+            - name: Set up kubectl
+              uses: azure/setup-kubectl@v4
+            - name: Configure kubeconfig
+              uses: azure/k8s-set-context@v4
+              with:
+                 method: kubeconfig
+                 kubeconfig: ${{ secrets.KUBECONFIG }}
+            - name: Test connection
+              run: kubectl get nodes
