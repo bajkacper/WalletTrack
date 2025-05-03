@@ -28,8 +28,8 @@ jobs:
         uses: actions/cache/save@v4
         with:
           path: |
-            .gradle
-            build
+            /backend/.gradle
+            /backend/build
           key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
 
   unit-test:
