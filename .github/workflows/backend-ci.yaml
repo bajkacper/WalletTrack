@@ -85,6 +85,7 @@ jobs:
     needs: unit-test
     permissions:
       packages: write
+      security-events: write
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -105,10 +106,25 @@ jobs:
           push: true
           platforms: linux/amd64
           tags: ghcr.io/${{ env.REPO_OWNER }}/wallettrack/backend:${{ github.sha }}
+      - name: Run Trivy with SARIF output
+        uses: aquasecurity/trivy-action@0.28.0
+        with:
+          image-ref: 'ghcr.io/${{ env.REPO_OWNER }}/wallettrack/backend:${{ github.sha }}'
+          format: 'sarif'
+          output: 'trivy-results-${{ runner.os }}.sarif'
+          ignore-unfixed: true
+          vuln-type: 'os,library'
+          severity: 'CRITICAL,HIGH'
+          
+      - name: Upload Trivy SARIF to GitHub Security tab
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: trivy-results-${{ runner.os }}.sarif
   docker-arm64:
     needs: unit-test
     permissions:
       packages: write
+      security-events: write
     runs-on: ubuntu-24.04-arm
     steps:
       - name: Checkout
@@ -141,7 +157,7 @@ jobs:
           severity: 'CRITICAL,HIGH'
         
       - name: Upload Trivy SARIF to GitHub Security tab
-        uses: github/codeql-action/upload-sarif@v2
+        uses: github/codeql-action/upload-sarif@v3
         with:
           sarif_file: trivy-results-${{ runner.os }}.sarif
 
