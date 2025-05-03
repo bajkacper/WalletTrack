@@ -1,0 +1,122 @@
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - "backend/**"
+
+jobs:
+  build:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-24.04, ubuntu-24.04-arm]
+      fail-fast: false
+    container:
+      image: gradle:8.5-jdk21
+    defaults:
+      run:
+        working-directory: backend
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+     
+      - name: Cache Gradle dependencies
+        uses: actions/cache/restore@v4
+        with:
+          path: |
+            ./backend/.gradle
+            ./backend/build
+          key: ${{ matrix.os }}-gradle-${{ hashFiles('backend/build.gradle') }}
+
+      - name: Build without testing
+        run: gradle build -x test
+        
+      - name: Caching Gradle dependencies after build
+        uses: actions/cache/save@v4
+        with:
+          path: |
+            ./backend/.gradle
+            ./backend/build
+          key: ${{ matrix.os }}-gradle-${{ hashFiles('backend/build.gradle')}}
+
+  unit-test:
+    needs: build
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-24.04, ubuntu-24.04-arm]
+      fail-fast: false
+    container:
+      image: gradle:8.5-jdk21
+    defaults:
+      run:
+        working-directory: backend
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        
+      - name: Cache Gradle dependencies
+        uses: actions/cache/restore@v4
+        with:
+          path: |
+            ./backend/.gradle
+            ./backend/build
+          key: ${{ matrix.os }}-gradle-${{ hashFiles('backend/build.gradle') }}
+
+      - name: Unit Test
+        run: gradle test
+      
+      - name: Archive test report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-report-${{ matrix.os}}-${{ github.sha }}
+          path: ./backend/build/reports/tests/test
+  docker-amd64:
+    needs: unit-test
+    permissions:
+      packages: write
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Set lowercase repo owner
+        run: |
+          echo "REPO_OWNER=$(echo "${{ github.repository_owner }}" | tr '[:upper:]' '[:lower:]')" >> $GITHUB_ENV
+      - name: Login into GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.repository_owner}}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Build and Push docker image
+        uses: docker/build-push-action@v6
+        with:
+          context: backend
+          push: true
+          platforms: linux/amd64
+          tags: ghcr.io/${{ env.REPO_OWNER }}/wallettrack/backend:${{ github.sha }}
+  docker-arm64:
+    needs: unit-test
+    permissions:
+      packages: write
+    runs-on: ubuntu-24.04-arm
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Set lowercase repo owner
+        run: |
+          echo "REPO_OWNER=$(echo "${{ github.repository_owner }}" | tr '[:upper:]' '[:lower:]')" >> $GITHUB_ENV
+      - name: Login into GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.repository_owner}}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Build and Push docker image
+        uses: docker/build-push-action@v6
+        with:
+          context: backend
+          push: true
+          platforms: linux/arm64
+          tags: ghcr.io/${{ env.REPO_OWNER }}/wallettrack/backend:${{ github.sha }}
