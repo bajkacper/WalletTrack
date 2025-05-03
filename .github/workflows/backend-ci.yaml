@@ -9,8 +9,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ubuntu-latest]
-        architecture: [x64, arm64]
+        os: [ubuntu-24.04, ubuntu-24.04-arm]
       fail-fast: false
     container:
       image: gradle:8.5-jdk21
@@ -20,6 +19,14 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
+     
+      - name: Cache Gradle dependencies
+        uses: actions/cache/restore@v4
+        with:
+          path: |
+            ./backend/.gradle
+            ./backend/build
+          key: ${{ matrix.os }}-gradle-${{ hashFiles('backend/build.gradle') }}
 
       - name: Build without testing
         run: gradle build -x test
@@ -30,15 +37,14 @@ jobs:
           path: |
             ./backend/.gradle
             ./backend/build
-          key: ${{ matrix.os }}-${{ matrix.architecture }}-gradle-${{ github.sha}}
+          key: ${{ matrix.os }}-gradle-${{ hashFiles('backend/build.gradle')}}
 
   unit-test:
     needs: build
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ubuntu-24.04]
-        architecture: [x64, arm64]
+        os: [ubuntu-24.04, ubuntu-24.04-arm]
       fail-fast: false
     container:
       image: gradle:8.5-jdk21
@@ -55,7 +61,7 @@ jobs:
           path: |
             ./backend/.gradle
             ./backend/build
-          key: ${{ matrix.os }}-${{ matrix.architecture }}-gradle-${{ hashFiles('backen/build.gradle') }}
+          key: ${{ matrix.os }}-gradle-${{ hashFiles('backend/build.gradle') }}
 
       - name: Unit Test
         run: gradle test
@@ -64,7 +70,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: test-report-${{ matrix.architecture }}-${{ hashFiles('backen/build.gradle') }}
+          name: test-report-${{ matrix.os}}-${{ github.sha }}
           path: ./backend/build/reports/tests/test
   docker-amd64:
     needs: unit-test
