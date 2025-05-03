@@ -16,7 +16,7 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
-     
+  
       - name: Cache Gradle dependencies
         uses: actions/cache/restore@v4
         with:
@@ -27,6 +27,8 @@ jobs:
 
       - name: Build without testing
         run: gradle build -x test
+      - name: Check if there is gradle
+        run : ls ~ -a
       - name: Depcheck
         uses: dependency-check/Dependency-Check_Action@main
         id: Depcheck
