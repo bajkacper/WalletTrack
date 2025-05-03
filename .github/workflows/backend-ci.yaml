@@ -55,7 +55,7 @@ jobs:
           path: |
             ./backend/.gradle
             ./backend/build
-          key: ${{ matrix.os }}-${{ matrix.architecture }}-gradle-${{ github.sha }}
+          key: ${{ matrix.os }}-${{ matrix.architecture }}-gradle-${{ hashFiles('backen/build.gradle') }}
 
       - name: Unit Test
         run: gradle test
@@ -64,7 +64,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: test-report-${{ matrix.architecture }}-${{ github.sha }}
+          name: test-report-${{ matrix.architecture }}-${{ hashFiles('backen/build.gradle') }}
           path: ./backend/build/reports/tests/test
   docker:
     needs: unit-test
