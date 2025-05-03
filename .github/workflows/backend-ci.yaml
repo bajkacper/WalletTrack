@@ -95,10 +95,3 @@ jobs:
           push: true
           platforms: linux/${{ matrix.architecture }}
           tags: ghcr.io/${{ env.REPO_OWNER }}/wallettrack/backend:${{ github.sha }}
-
-
-  
-  
-      
-  
-

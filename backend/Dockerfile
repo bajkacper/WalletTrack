@@ -1,4 +1,4 @@
-FROM gradle:8-jdk21 as builder
+FROM gradle:8-jdk21-alpine as builder
 
 WORKDIR /app
 
@@ -17,7 +17,7 @@ COPY . .
 RUN gradle build --no-daemon
 
 # Etap 2: Aplikacja
-FROM amazoncorretto:21
+FROM eclipse-temurin:21-alpine
 # Ustawienie zmiennych środowiskowych
 ENV JAVA_HOME=/usr/lib/jvm/java-21-openjdk
 ENV PATH=$PATH:$JAVA_HOME/bin
