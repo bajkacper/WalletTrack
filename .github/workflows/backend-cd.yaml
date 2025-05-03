@@ -15,7 +15,7 @@ jobs:
                  method: kubeconfig
                  kubeconfig: ${{ secrets.KUBECONFIG }}
             - name: Test connection
-              run: kubectl config current-context
+              run: kubectl get nodes
 
         
 
