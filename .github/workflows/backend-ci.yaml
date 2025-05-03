@@ -28,8 +28,8 @@ jobs:
         uses: actions/cache/save@v4
         with:
           path: |
-            ~/.gradle
-            ~/build
+            .gradle
+            build
           key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
 
   unit-test:
@@ -53,8 +53,8 @@ jobs:
         uses: actions/cache/restore@v4
         with:
           path: |
-            ~/.gradle
-            ~/build
+            .gradle
+            build
           key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
 
       - name: Check Java and Gradle Version
