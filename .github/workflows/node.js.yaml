@@ -13,18 +13,14 @@ jobs:
     defaults:
       run:
         working-directory: frontend
-    strategy:
-      matrix:
-        node-version: [18.x, 20.x, 22.x]
-        # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
 
     steps:
     - name: Clone Repository
       uses: actions/checkout@v4
-    - name: Use Node.js ${{ matrix.node-version }}
+    - name: Use Node.js 22.x
       uses: actions/setup-node@v4
       with:
-        node-version: ${{ matrix.node-version }}
+        node-version: 22.x
     - name: install depenencies
       run: npm ci
     - name: Build application
