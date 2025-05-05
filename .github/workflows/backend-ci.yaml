@@ -1,3 +1,4 @@
+name: Backend CI/CD
 on:
   workflow_dispatch:
   push:
@@ -15,13 +16,15 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
-     
+  
       - name: Cache Gradle dependencies
         uses: actions/cache/restore@v4
         with:
           path: |
             ./backend/.gradle
             ./backend/build
+            ./backend/gradle
+            /home/gradle/.gradle
           key: ${{ runner.os }}-gradle-${{ hashFiles('backend/build.gradle') }}
 
       - name: Build without testing
@@ -49,6 +52,8 @@ jobs:
           path: |
             ./backend/.gradle
             ./backend/build
+            ./backend/gradle
+            /home/gradle/.gradle
           key:  ${{runner.os}}-gradle-${{ hashFiles('backend/build.gradle')}}
 
   unit-test:
@@ -69,6 +74,8 @@ jobs:
           path: |
             ./backend/.gradle
             ./backend/build
+            ./backend/gradle
+            /home/gradle/.gradle
           key: ${{runner.os}}-gradle-${{ hashFiles('backend/build.gradle') }}
 
       - name: Unit Test
@@ -84,6 +91,7 @@ jobs:
     needs: unit-test
     permissions:
       packages: write
+      security-events: write
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -104,10 +112,25 @@ jobs:
           push: true
           platforms: linux/amd64
           tags: ghcr.io/${{ env.REPO_OWNER }}/wallettrack/backend:${{ github.sha }}
+      - name: Run Trivy with SARIF output
+        uses: aquasecurity/trivy-action@0.28.0
+        with:
+          image-ref: 'ghcr.io/${{ env.REPO_OWNER }}/wallettrack/backend:${{ github.sha }}'
+          format: 'sarif'
+          output: 'trivy-results-${{ runner.os }}-${{ runner.arch }}.sarif'
+          ignore-unfixed: true
+          vuln-type: 'os,library'
+          severity: 'CRITICAL,HIGH'
+          
+      - name: Upload Trivy SARIF to GitHub Security tab
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: trivy-results-${{ runner.os }}-${{ runner.arch }}.sarif
   docker-arm64:
     needs: unit-test
     permissions:
       packages: write
+      security-events: write
     runs-on: ubuntu-24.04-arm
     steps:
       - name: Checkout
@@ -128,3 +151,34 @@ jobs:
           push: true
           platforms: linux/arm64
           tags: ghcr.io/${{ env.REPO_OWNER }}/wallettrack/backend:${{ github.sha }}
+     
+      - name: Run Trivy with SARIF output
+        uses: aquasecurity/trivy-action@0.28.0
+        with:
+          image-ref: 'ghcr.io/${{ env.REPO_OWNER }}/wallettrack/backend:${{ github.sha }}'
+          format: 'sarif'
+          output: 'trivy-results-${{ runner.os }}-${{ runner.arch }}.sarif'
+          ignore-unfixed: true
+          vuln-type: 'os,library'
+          severity: 'CRITICAL,HIGH'
+        
+      - name: Upload Trivy SARIF to GitHub Security tab
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: trivy-results-${{ runner.os }}-${{ runner.arch }}.sarif
+
+  deploy-to-development:
+        runs-on: self-hosted
+        needs: [docker-arm64,docker-amd64]
+        environment:
+            name: development
+        steps:
+            - name: Set up kubectl
+              uses: azure/setup-kubectl@v4
+            - name: Configure kubeconfig
+              uses: azure/k8s-set-context@v4
+              with:
+                 method: kubeconfig
+                 kubeconfig: ${{ secrets.KUBECONFIG }}
+            - name: Test connection
+              run: kubectl get nodes

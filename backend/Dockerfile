@@ -1,35 +1,23 @@
+# Etap 1: Budowanie aplikacji
 FROM gradle:8-jdk21-alpine as builder
 
 WORKDIR /app
 
-# Kopiowanie plików zależności Gradle
-COPY gradle /app/gradle
-COPY build.gradle /app/
-COPY settings.gradle /app/
-
-# Pobranie zależności (Gradle będzie je przechowywał w cache)
-RUN gradle build --no-daemon
-
-# Kopiowanie całego kodu źródłowego
+# Kopiowanie całego projektu
 COPY . .
 
-# Budowanie aplikacji
-RUN gradle build --no-daemon
+# Budowanie fat JAR-a Spring Boot
+RUN gradle bootJar --no-daemon -no-build-cache
 
-# Etap 2: Aplikacja
-FROM eclipse-temurin:21-alpine
-# Ustawienie zmiennych środowiskowych
-ENV JAVA_HOME=/usr/lib/jvm/java-21-openjdk
-ENV PATH=$PATH:$JAVA_HOME/bin
+# Etap 2: Obraz uruchomieniowy
+FROM eclipse-temurin:21-jre-alpine
 
-# Praca w katalogu /app
 WORKDIR /app
 
-# Kopiowanie zbudowanego JAR-a z poprzedniego etapu
-COPY --from=builder /app/build/libs/*-SNAPSHOT.jar /app/*-SNAPSHOT.jar
+# Kopiowanie gotowego JAR-a z builda
+COPY --from=builder /app/build/libs/*-SNAPSHOT.jar app.jar
 
 # Uruchamianie aplikacji
-CMD java -jar /app/*-SNAPSHOT.jar
+CMD ["java", "-jar", "app.jar"]
 
-# Eksponowanie portu 8080
 EXPOSE 8080
