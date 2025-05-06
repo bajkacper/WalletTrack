@@ -116,6 +116,8 @@ jobs:
           push: true
           platforms: linux/amd64,linux/arm64 
           tags: ghcr.io/${{ env.REPO_OWNER }}/wallettrack/backend:${{ github.sha }}
+          cache-from: ghcr.io/${{ env.REPO_OWNER }}/wallettrack/backend:cache
+          cache-to: ghcr.io/${{ env.REPO_OWNER }}/wallettrack/backend:cache
       - name: Run Trivy with SARIF output
         uses: aquasecurity/trivy-action@0.28.0
         with:
