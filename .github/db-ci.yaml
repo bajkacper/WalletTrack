@@ -1,0 +1,25 @@
+name: Database CI CD
+on:
+  push:
+    paths:
+      - "db/migrations/**"
+      - ".github/workflows/db-migrate.yml"
+  
+
+jobs:
+  flyway:
+    runs-on: self-hosted
+    enviroment:
+      name: development
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Run Flyway Migrations
+        uses: red-gate/FlywayGithubAction@v1
+        with:
+          url: jdbc:postgresql://${{ secrets.DB_HOST }}:5432/${{ secrets.DB_NAME }}
+          user: ${{ secrets.DB_USER }}
+          password: ${{ secrets.DB_PASSWORD }}
+          locations: filesystem:./db/migrations
