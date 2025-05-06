@@ -9,7 +9,7 @@ on:
 jobs:
   flyway:
     runs-on: self-hosted
-    enviroment:
+    environment:
       name: development
 
     steps:
