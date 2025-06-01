@@ -13,22 +13,22 @@ import java.util.List;
 @RequestMapping("/api/users")
 @RequiredArgsConstructor
 public class UserController {
-    private final UserService userService;
-
-    @GetMapping("/")
-    public List<User> all() { return userService.getAllUsers(); }
-    @GetMapping("/{id}")
-    public User get(@PathVariable Long id) {
-        return userService.getUser(id); }
-    @PostMapping ("/add")
-    public ResponseEntity<User> create(@RequestBody User u) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(userService.createUser(u));
-    }
-    @PutMapping("/{id}")
-    public User update(@PathVariable Long id, @RequestBody User u) {
-        return userService.updateUser(id, u);
-    }
-    @DeleteMapping("/{id}")
-    public void delete(@PathVariable Long id) {
-        userService.deleteUser(id); }
+//    private final UserService userService;
+//
+//    @GetMapping("/")
+//    public List<User> all() { return userService.getAllUsers(); }
+//    @GetMapping("/{id}")
+//    public User get(@PathVariable Long id) {
+//        return userService.getUser(id); }
+//    @PostMapping ("/add")
+//    public ResponseEntity<User> create(@RequestBody User u) {
+//        return ResponseEntity.status(HttpStatus.CREATED).body(userService.createUser(u));
+//    }
+//    @PutMapping("/{id}")
+//    public User update(@PathVariable Long id, @RequestBody User u) {
+//        return userService.updateUser(id, u);
+//    }
+//    @DeleteMapping("/{id}")
+//    public void delete(@PathVariable Long id) {
+//        userService.deleteUser(id); }
 }

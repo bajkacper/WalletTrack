@@ -34,4 +34,8 @@ public class User {
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Wallet> wallets = new ArrayList<>();
+
+    @Column(nullable = false)
+    private boolean enabled = false;
+
 }
