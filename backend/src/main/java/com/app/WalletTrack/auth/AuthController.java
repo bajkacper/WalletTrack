@@ -1,13 +1,10 @@
 package com.app.WalletTrack.auth;
 
-import com.app.WalletTrack.DTO.LoginRequest;
-import com.app.WalletTrack.DTO.LoginResponse;
 import com.app.WalletTrack.DTO.RegisterRequest;
 import com.app.WalletTrack.mail.ConfirmationTokenService;
 import com.app.WalletTrack.model.User;
 import com.app.WalletTrack.repository.UserRepository;
 import com.app.WalletTrack.service.UserService;
-import org.apache.tomcat.util.net.openssl.ciphers.Authentication;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -59,15 +56,6 @@ public class AuthController {
         String token = jwtUtil.generateToken(user.getEmail(), getRoleName(user.getRole()));
 
         return Map.of("token", token);
-    }
-
-    @GetMapping("/api/user/hello")
-    public ResponseEntity<String> userHello() {
-        return ResponseEntity.ok("Witaj użytkowniku!");
-    }
-    @GetMapping("/api/admin/hello")
-    public ResponseEntity<String> adminHello() {
-        return ResponseEntity.ok("Witaj ADMINIE!");
     }
 
     private String getRoleName(short roleValue) {
