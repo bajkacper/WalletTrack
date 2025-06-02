@@ -5,7 +5,8 @@ CREATE TABLE users (
     last_name VARCHAR(40) NOT NULL,
     email VARCHAR(100) NOT NULL UNIQUE,
     password VARCHAR(255) NOT NULL,
-    role SMALLINT NOT NULL
+    role SMALLINT NOT NULL,
+    enabled BOOLEAN NOT NULL
 );
 
 -- Currencies
@@ -45,6 +46,15 @@ CREATE TABLE transactions (
     FOREIGN KEY (wallet_id) REFERENCES wallets(id) ON DELETE CASCADE
 );
 
+CREATE TABLE confirmation_token (
+    id SERIAL PRIMARY KEY,
+    token VARCHAR(255) NOT NULL,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    expires_at TIMESTAMP NOT NULL,
+    confirmed_at TIMESTAMP,
+    user_id INTEGER NOT NULL,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+);
 
 CREATE OR REPLACE FUNCTION validate_email(p_email VARCHAR)
 RETURNS BOOLEAN AS $$
