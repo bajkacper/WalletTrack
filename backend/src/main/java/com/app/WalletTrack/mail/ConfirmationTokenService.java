@@ -30,7 +30,6 @@ public class ConfirmationTokenService {
         return tokenRepository.save(confirmationToken);
     }
 
-
     public void confirmToken(String token) {
         ConfirmationToken confirmationToken = tokenRepository.findByToken(token)
                 .orElseThrow(() -> new IllegalStateException("Token nie istnieje"));
