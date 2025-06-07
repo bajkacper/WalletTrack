@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: dev
+  name: wallettrack-deployment-backend
+  labels:
+    app: wallettrack-backend
+spec:
+  replicas: 6
+  selector:
+    matchLabels:
+      app: wallettrack-backend
+  template:
+    metadata:
+      labels:
+        app: wallettrack-backend
+    spec:
+      containers:
+        - name: wallettrack-backend
+          image: ghcr.io/kacperjarocki/wallettrack/backend:d283580c6d61c1cbad1c014b465bdedbf86b8857
+          ports:
+            - containerPort: 8080

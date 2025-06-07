@@ -10,4 +10,15 @@ services:
     ports:
       - "5432:5432"
     volumes:
-      - ./db/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+      - postgres_data:/var/lib/postgresql/data
+
+  flyway:
+    image: flyway/flyway:9
+    container_name: wallet_flyway
+    depends_on:
+      - db
+    command: -url=jdbc:postgresql://db:5432/wallet_track -user=wallet_user -password=wallet_pass migrate
+    volumes:
+      - ./db/migrations:/flyway/sql
+volumes:
+  postgres_data:
