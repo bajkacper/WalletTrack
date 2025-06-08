@@ -1,5 +1,5 @@
--- Users
-CREATE TABLE users (
+-- Users Table
+CREATE TABLE IF NOT EXISTS users (
     id SERIAL PRIMARY KEY,
     first_name VARCHAR(40) NOT NULL,
     last_name VARCHAR(40) NOT NULL,
@@ -9,15 +9,15 @@ CREATE TABLE users (
     enabled BOOLEAN NOT NULL
 );
 
--- Currencies
-CREATE TABLE currencies (
+-- Currencies Table
+CREATE TABLE IF NOT EXISTS currencies (
     id SERIAL PRIMARY KEY,
     code VARCHAR(3) NOT NULL UNIQUE,
     name VARCHAR(50) NOT NULL
 );
 
--- Exchange Rates
-CREATE TABLE exchange_rates (
+-- Exchange Rates Table
+CREATE TABLE IF NOT EXISTS exchange_rates (
     id SERIAL PRIMARY KEY,
     currency_id INTEGER NOT NULL,
     rate DECIMAL(10, 4) NOT NULL,
@@ -25,8 +25,8 @@ CREATE TABLE exchange_rates (
     FOREIGN KEY (currency_id) REFERENCES currencies(id) ON DELETE CASCADE
 );
 
--- Wallets
-CREATE TABLE wallets (
+-- Wallets Table
+CREATE TABLE IF NOT EXISTS wallets (
     id SERIAL PRIMARY KEY,
     user_id INTEGER NOT NULL,
     currency_id INTEGER NOT NULL,
@@ -37,8 +37,8 @@ CREATE TABLE wallets (
     FOREIGN KEY (currency_id) REFERENCES currencies(id) ON DELETE RESTRICT
 );
 
--- Transactions
-CREATE TABLE transactions (
+-- Transactions Table
+CREATE TABLE IF NOT EXISTS transactions (
     id SERIAL PRIMARY KEY,
     wallet_id INTEGER NOT NULL,
     amount DECIMAL(15, 2) NOT NULL,

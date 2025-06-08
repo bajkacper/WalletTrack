@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: dev-database
+  namespace: dev
+spec:
+  type: ExternalName
+  externalName: docker-compose.lan
+  ports:
+    - port: 5432
