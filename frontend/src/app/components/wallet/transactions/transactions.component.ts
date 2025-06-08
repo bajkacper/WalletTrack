@@ -1,22 +1,53 @@
-import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { CommonModule, CurrencyPipe, NgClass } from '@angular/common';
+import { Component, OnInit } from '@angular/core';
 import { MatTableModule } from '@angular/material/table';
+import { Transaction } from '../../../models/transaction'; 
+import { ApiService } from '../../../services/api.service'; 
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { catchError, finalize } from 'rxjs/operators';
+import { of } from 'rxjs';
+
 @Component({
   selector: 'app-transactions',
   standalone: true,
   imports: [
     MatTableModule,
-    CommonModule
+    CommonModule,
+    CurrencyPipe,
+    NgClass, 
+    MatProgressSpinnerModule 
   ],
   templateUrl: './transactions.component.html',
   styleUrl: './transactions.component.scss'
 })
-export class TransactionsComponent {
-  displayedColumns: string[] = ['date', 'description', 'amount', 'type'];
-  transactions = [
-    { date: new Date(), description: 'Groceries', amount: -50, type: 'Expense' },
-    { date: new Date(), description: 'Salary', amount: 1500, type: 'Income' },
-    { date: new Date(), description: 'Electricity Bill', amount: -100, type: 'Expense' },
-    { date: new Date(), description: 'Freelance Work', amount: 500, type: 'Income' }
-  ];
+export class TransactionsComponent implements OnInit { 
+  displayedColumns: string[] = ['transactionDate', 'amount', 'transactionType'];
+  transactions: Transaction[] = [];
+  isLoadingTransactions: boolean = false;
+  errorMessage: string | null = null;
+
+  constructor(private apiService: ApiService) { }
+
+  ngOnInit(): void {
+    this.fetchUserTransactions();
+  }
+
+  fetchUserTransactions(): void {
+    this.isLoadingTransactions = true;
+    this.errorMessage = null;
+
+    this.apiService.request<Transaction[]>('myTransactions', 'GET', undefined, undefined, { withCredentials: true })
+      .pipe(
+        catchError(error => {
+          this.errorMessage = 'Failed to load transactions. Please try again.';
+          return of([]);
+        }),
+        finalize(() => {
+          this.isLoadingTransactions = false;
+        })
+      )
+      .subscribe(data => {
+        this.transactions = data;
+      });
+  }
 }

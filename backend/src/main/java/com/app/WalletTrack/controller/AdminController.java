@@ -2,6 +2,7 @@ package com.app.WalletTrack.controller;
 
 import com.app.WalletTrack.model.User;
 import com.app.WalletTrack.repository.UserRepository;
+import com.app.WalletTrack.service.UserService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -15,9 +16,11 @@ import java.util.Optional;
 public class AdminController {
 
     private final UserRepository userRepository;
+    private final UserService userService;
 
-    public AdminController(UserRepository userRepository) {
+    public AdminController(UserRepository userRepository, UserService userService) {
         this.userRepository = userRepository;
+        this.userService = userService;
     }
 
     @GetMapping("/users")
@@ -35,7 +38,7 @@ public class AdminController {
 
     @PostMapping("/users")
     public ResponseEntity<User> createUser(@RequestBody User user) {
-        userRepository.save(user);
+        userService.createUserByAdmin(user);
         return ResponseEntity.ok(user);
     }
 

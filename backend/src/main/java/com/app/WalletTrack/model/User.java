@@ -1,5 +1,6 @@
 package com.app.WalletTrack.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -33,6 +34,7 @@ public class User {
     private Short role;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
     private List<Wallet> wallets = new ArrayList<>();
 
     @Column(nullable = false)

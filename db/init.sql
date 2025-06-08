@@ -30,6 +30,7 @@ CREATE TABLE wallets (
     id SERIAL PRIMARY KEY,
     user_id INTEGER NOT NULL,
     currency_id INTEGER NOT NULL,
+    name VARCHAR(255) NOT NULL,
     balance DECIMAL(15, 2) NOT NULL DEFAULT 0.00,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
@@ -41,7 +42,7 @@ CREATE TABLE transactions (
     id SERIAL PRIMARY KEY,
     wallet_id INTEGER NOT NULL,
     amount DECIMAL(15, 2) NOT NULL,
-    transaction_type SMALLINT NOT NULL, -- 1=deposit, 2=withdrawal, 3=transfer, etc.
+    transaction_type VARCHAR(20) NOT NULL CHECK (transaction_type IN ('DEPOSIT', 'WITHDRAWAL', 'TRANSFER')), -- 1=deposit, 2=withdrawal, 3=transfer, etc.
     transaction_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (wallet_id) REFERENCES wallets(id) ON DELETE CASCADE
 );

@@ -1,29 +1,25 @@
 <div class="transactions-container">
-    <h2>Transaction History</h2>
-    <table mat-table [dataSource]="transactions" class="mat-elevation-z8">
-      <ng-container matColumnDef="date">
-        <th mat-header-cell *matHeaderCellDef>Date</th>
-        <td mat-cell *matCellDef="let transaction">{{ transaction.date | date }}</td>
-      </ng-container>
-  
-      <ng-container matColumnDef="description">
-        <th mat-header-cell *matHeaderCellDef>Description</th>
-        <td mat-cell *matCellDef="let transaction">{{ transaction.description }}</td>
-      </ng-container>
-  
-      <ng-container matColumnDef="amount">
-        <th mat-header-cell *matHeaderCellDef>Amount</th>
-        <td mat-cell *matCellDef="let transaction" [ngClass]="{'income': transaction.amount > 0, 'expense': transaction.amount < 0}">
-          {{ transaction.amount | currency }}
-        </td>
-      </ng-container>
-  
-      <ng-container matColumnDef="type">
-        <th mat-header-cell *matHeaderCellDef>Type</th>
-        <td mat-cell *matCellDef="let transaction">{{ transaction.type }}</td>
-      </ng-container>
-  
-      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-    </table>
-  </div>
+  <h2>Historia transakcji</h2>
+  <table mat-table [dataSource]="transactions" class="mat-elevation-z8">
+
+    <ng-container matColumnDef="transactionDate">
+      <th mat-header-cell *matHeaderCellDef>Data</th>
+      <td mat-cell *matCellDef="let t">{{ t.transactionDate | date:'yyyy-MM-dd HH:mm' }}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="amount">
+      <th mat-header-cell *matHeaderCellDef>Kwota</th>
+      <td mat-cell *matCellDef="let t" [ngClass]="{'income': t.amount > 0, 'expense': t.amount < 0}">
+        {{ t.amount | currency:'PLN':'symbol':'1.2-2' }}
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="transactionType">
+      <th mat-header-cell *matHeaderCellDef>Portfel</th>
+      <td mat-cell *matCellDef="let t">{{ t.transactionType }}</td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+  </table>
+</div>

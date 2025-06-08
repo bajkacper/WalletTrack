@@ -1,22 +1,18 @@
 <mat-toolbar>
-  <a class="href" routerLink="/home">
+  <a class="href" routerLink="/">
     <i class="material-icons px-2">account_balance_wallet</i>
     <span class="font-bold text-lg">WalletTrack</span>
   </a>
     <span class="example-spacer"></span>
-    
-    <div class="example-button-row flex gap-2">
+    <div class="example-button-row flex gap-5">
+    @if(!(isLoggedIn$ | async)){
+      <button mat-button routerLink="/login" mat-button>Login</button>
+      <button mat-button routerLink="/register" mat-button>Register</button>
+    } @else {
+      <button *ngIf="admin === 0" mat-button color="primary" routerLink="/admin">Admin panel</button>
       <button mat-button color="primary" routerLink="/wallets">Wallets</button>
       <button mat-button color="primary" routerLink="/transactions">Transactions</button>
-    </div>
-    @if(isLoggedIn){
-      <button mat-icon-button class="login-icon" aria-label="Logout from account" matTooltip="Logout from account" (click)="logout()">
-        <mat-icon fontIcon="logout">logout</mat-icon>
-      </button>
-    } @else {
-      <button mat-icon-button class="login-icon" aria-label="Login to account" matTooltip="Login into account" routerLink="/login">
-        <mat-icon>login</mat-icon>
-      </button>
+      <button (click)="logout()" mat-button>Logout</button>
     }
-    
+    </div>
 </mat-toolbar>

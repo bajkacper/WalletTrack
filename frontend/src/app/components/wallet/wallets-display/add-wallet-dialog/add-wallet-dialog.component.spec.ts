@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { ProfileSettingsComponent } from './profile-settings.component';
+import { AddWalletDialogComponent } from './add-wallet-dialog.component';
 
-describe('ProfileSettingsComponent', () => {
-  let component: ProfileSettingsComponent;
-  let fixture: ComponentFixture<ProfileSettingsComponent>;
+describe('AddWalletDialogComponent', () => {
+  let component: AddWalletDialogComponent;
+  let fixture: ComponentFixture<AddWalletDialogComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [ProfileSettingsComponent]
+      imports: [AddWalletDialogComponent]
     })
     .compileComponents();
     
-    fixture = TestBed.createComponent(ProfileSettingsComponent);
+    fixture = TestBed.createComponent(AddWalletDialogComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

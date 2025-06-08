@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { LoadingSpinnerComponent } from './loading-spinner.component';
+import { HistoryDialogComponent } from './history-dialog.component';
 
-describe('LoadingSpinnerComponent', () => {
-  let component: LoadingSpinnerComponent;
-  let fixture: ComponentFixture<LoadingSpinnerComponent>;
+describe('HistoryDialogComponent', () => {
+  let component: HistoryDialogComponent;
+  let fixture: ComponentFixture<HistoryDialogComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [LoadingSpinnerComponent]
+      imports: [HistoryDialogComponent]
     })
     .compileComponents();
     
-    fixture = TestBed.createComponent(LoadingSpinnerComponent);
+    fixture = TestBed.createComponent(HistoryDialogComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

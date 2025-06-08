@@ -30,28 +30,50 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                                     HttpServletResponse response,
                                     FilterChain filterChain) throws ServletException, IOException {
 
-        final String authHeader = request.getHeader("Authorization");
 
-        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+        Cookie[] cookies = request.getCookies();
+        String token = null;
+
+        if (cookies != null) {
+            for (Cookie cookie : cookies) {
+                if ("jwt".equals(cookie.getName())) {
+                    token = cookie.getValue();
+                    break;
+                }
+            }
+        }
+
+        if (token == null) {
             filterChain.doFilter(request, response);
             return;
         }
 
-        final String token = authHeader.substring(7);
-        final String email = jwtUtil.validateTokenAndRetrieveSubject(token);
-        final String role = jwtUtil.extractRole(token);
+        try {
+            final String email = jwtUtil.validateTokenAndRetrieveSubject(token);
+            final String role = jwtUtil.extractRole(token);
 
-        if (email != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-            UserDetails userDetails = userDetailsService.loadUserByUsername(email);
+            if (email != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+                UserDetails userDetails = userDetailsService.loadUserByUsername(email);
 
-            List<GrantedAuthority> authorities = List.of(new SimpleGrantedAuthority("ROLE_" + role)); // role = "ROLE_ADMIN"
+                List<GrantedAuthority> authorities = List.of(new SimpleGrantedAuthority("ROLE_" + role)); // role = "ROLE_ADMIN"
 
-            UsernamePasswordAuthenticationToken authToken =
-                    new UsernamePasswordAuthenticationToken(userDetails, null, authorities);
+                UsernamePasswordAuthenticationToken authToken =
+                        new UsernamePasswordAuthenticationToken(userDetails, null, authorities);
 
-            authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
 
-            SecurityContextHolder.getContext().setAuthentication(authToken);
+                SecurityContextHolder.getContext().setAuthentication(authToken);
+            }
+        } catch (Exception e){
+            Cookie expiredCookie = new Cookie("jwt", null);
+            expiredCookie.setHttpOnly(true);
+            expiredCookie.setSecure(false);
+            expiredCookie.setPath("/");
+            expiredCookie.setMaxAge(0);//delete
+
+            response.addCookie(expiredCookie);
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            return;
         }
 
         filterChain.doFilter(request, response);

@@ -1,0 +1,24 @@
+<div class="confirm-container" [ngClass]="{ error: error }" style="display: flex; justify-content: center; align-items: center; min-height: 80vh;">
+  <mat-card style="max-width: 400px; width: 100%; padding: 32px 16px; text-align: center;">
+    <mat-card-title style="font-size: 1.5rem; margin-bottom: 16px;">
+      Aktywacja konta
+    </mat-card-title>
+    <mat-card-content>
+      <ng-container *ngIf="loading; else resultBlock">
+        <mat-icon style="font-size: 48px; color: #1976d2;">hourglass_empty</mat-icon>
+        <p style="margin: 16px 0 0 0;">Trwa potwierdzanie konta...</p>
+      </ng-container>
+      <ng-template #resultBlock>
+        <div *ngIf="!error; else errorBlock" style="color: #388e3c; font-weight: 500; margin-bottom: 12px;">
+          <p style="margin: 16px 0 0 0;">{{ message }}</p>
+          <p style="font-size: 0.95rem; color: #666;">Za chwilę nastąpi przekierowanie do logowania...</p>
+        </div>
+        <ng-template #errorBlock>
+          <div style="color: #d32f2f; font-weight: 500;">
+          <p style="margin: 16px 0 0 0;">{{ message }}</p>
+          </div>
+        </ng-template>
+      </ng-template>
+    </mat-card-content>
+  </mat-card>
+</div>

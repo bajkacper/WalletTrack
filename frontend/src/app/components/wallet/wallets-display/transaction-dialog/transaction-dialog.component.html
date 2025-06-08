@@ -1,0 +1,32 @@
+<h2 mat-dialog-title>{{ transactionType === 'deposit' ? 'Deposit Funds' : 'Withdraw Funds' }}</h2>
+<div mat-dialog-content>
+  <p>Wallet: <strong>{{ wallet.name }} ({{ wallet.currency.code }})</strong></p>
+  <p>Current balance: <strong>{{ wallet.balance | currency:wallet.currency.code:'symbol':'1.2-2' }}</strong></p>
+
+  <form [formGroup]="transactionForm" (ngSubmit)="onSubmit()">
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Amount</mat-label>
+      <input matInput type="number" formControlName="amount" required step="0.01" min="0.01">
+      <mat-error *ngIf="transactionForm.get('amount')?.hasError('required') && transactionForm.get('amount')?.touched">
+        Amount is required
+      </mat-error>
+      <mat-error *ngIf="transactionForm.get('amount')?.hasError('min') && transactionForm.get('amount')?.touched">
+        Amount must be greater than 0
+      </mat-error>
+    </mat-form-field>
+  </form>
+
+  <div *ngIf="isLoading" class="loading-spinner-container">
+    <mat-spinner diameter="30"></mat-spinner>
+    <p>Processing...</p>
+  </div>
+  <div *ngIf="errorMessage" class="error-message">
+    <p>{{ errorMessage }}</p>
+  </div>
+</div>
+<div mat-dialog-actions align="end">
+  <button mat-button (click)="onCancel()" [disabled]="isLoading">Cancel</button>
+  <button mat-raised-button color="primary" (click)="onSubmit()" [disabled]="transactionForm.invalid || isLoading">
+    {{ transactionType === 'deposit' ? 'Deposit' : 'Withdraw' }}
+  </button>
+</div>

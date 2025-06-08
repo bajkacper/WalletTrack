@@ -22,5 +22,29 @@ public class ExchangeRate {
 
     @Column(name = "fetched_at", columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
     private LocalDateTime fetchedAt = LocalDateTime.now();
+
+    public Currency getCurrency() {
+        return currency;
+    }
+
+    public void setCurrency(Currency currency) {
+        this.currency = currency;
+    }
+
+    public BigDecimal getRate() {
+        return rate;
+    }
+
+    public void setRate(BigDecimal rate) {
+        this.rate = rate;
+    }
+
+    public LocalDateTime getFetchedAt() {
+        return fetchedAt;
+    }
+
+    public void setFetchedAt(LocalDateTime fetchedAt) {
+        this.fetchedAt = fetchedAt;
+    }
 }
 

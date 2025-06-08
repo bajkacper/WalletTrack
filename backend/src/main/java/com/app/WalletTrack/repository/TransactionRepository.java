@@ -9,4 +9,7 @@ import java.util.List;
 @Repository
 public interface TransactionRepository extends JpaRepository<Transaction, Long> {
     List<Transaction> findByWalletId(Long walletId);
+    List<Transaction> findByWallet_UserId(Long userId);
+    List<Transaction> findByWallet_UserEmail(String email);
+
 }

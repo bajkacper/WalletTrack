@@ -1,8 +1,18 @@
 import { CommonModule } from '@angular/common';
-import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { HttpErrorResponse } from '@angular/common/http';
+import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators, FormControl } from '@angular/forms';
+import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { Router } from '@angular/router';
+import { ApiService } from '../../services/api.service';
+import { LoginResponse } from '../../models/login-response';
+import { LoadingService } from '../../services/loading.service';
+import { NavbarComponent } from '../shared/navbar/navbar.component';
+import { LoginStatusService } from '../../services/login-status.service';
 
 @Component({
   selector: 'app-login',
@@ -11,26 +21,61 @@ import { MatFormFieldModule } from '@angular/material/form-field';
     ReactiveFormsModule,
     CommonModule,
     MatFormFieldModule,
-    MatCardModule
+    MatCardModule,
+    MatInputModule,
+    MatButtonModule,
+    MatProgressSpinnerModule
   ],
   templateUrl: './login.component.html',
   styleUrl: './login.component.scss'
 })
 export class LoginComponent {
-  form: FormGroup = new FormGroup({
-    username: new FormControl('', [Validators.required]),
-    password: new FormControl('', [Validators.required]),
-  });
+  loginForm: FormGroup;
+  error: string | null = null;
 
-  @Input() error: string | null = null;
+  constructor(
+    private fb: FormBuilder,
+    private router: Router,
+    private apiService: ApiService,
+    public loadingService: LoadingService,
+    private loginStatusService: LoginStatusService
+  ) {
+    this.loginForm = this.fb.group({
+      email: ['', [Validators.required, Validators.email]],
+      password: ['', Validators.required],
+    });
+  }
 
-  @Output() submitEM = new EventEmitter<any>();
+  get email() { return this.loginForm.get('email'); }
+  get password() { return this.loginForm.get('password'); }
 
-  submit() {
-    if (this.form.valid) {
-      console.log('Login Data:', this.form.value);
-        } else {
-      this.error = 'Please fill in all required fields.';
+  submit(): void {
+    if (this.loginForm.invalid) {
+      this.loginForm.markAllAsTouched();
+      return;
     }
+
+    this.error = null;
+    const { email, password } = this.loginForm.value;
+    this.loadingService.startLoading();
+
+    this.apiService.request<LoginResponse>('login','POST',{ email, password },undefined,{ withCredentials: true }).subscribe({
+      next: (res) => {
+        localStorage.setItem('role', res.userRole.toString());
+        localStorage.setItem('id', res.userId.toString());
+        this.loadingService.stopLoading();
+        this.loginStatusService.notifyLoginStatusChange();
+        this.router.navigate(['/']);
+      },
+      error: (err) => {
+        this.loadingService.stopLoading();
+
+        if (err instanceof HttpErrorResponse && err.status === 401) {
+          this.error = 'Invalid email or password';
+        } else {
+          this.error = 'An unexpected error occurred';
+        }
+      }
+    });
   }
 }

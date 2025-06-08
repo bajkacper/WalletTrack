@@ -2,6 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { EndpointKeys, Endpoints, lambda } from './endpoints';
 import { Observable } from 'rxjs';
+import { RequestOptions } from '../models/request-options';
 
 @Injectable({
   providedIn: 'root'
@@ -10,7 +11,7 @@ export class ApiService {
 
   constructor(private http: HttpClient) { }
 
-  request<T = any>(url: EndpointKeys, method: string, payload?: object, urlParams?: any): Observable<T>{
+  request<T = any>(url: EndpointKeys, method: string, payload?: object, urlParams?: any, options: RequestOptions = {}): Observable<T>{
     let finalUrl: string;
 
     if(!urlParams){
@@ -20,8 +21,11 @@ export class ApiService {
       finalUrl = (<lambda><unknown>Endpoints[url])(urlParams); 
     }
 
-    return !payload
-    ? this.http.request<T>(method, finalUrl)
-    : this.http.request<T>(method, finalUrl, {body: payload}); 
+    const allOptions: RequestOptions & { body?: any } = { ...options };
+    if (payload) {
+      allOptions.body = payload;
+    }
+
+    return this.http.request<T>(method, finalUrl, allOptions);
   }
 }

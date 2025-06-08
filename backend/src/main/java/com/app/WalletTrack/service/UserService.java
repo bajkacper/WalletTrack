@@ -45,10 +45,24 @@ public class UserService {
     public void registerUser(RegisterRequest request) {
         User user = createUser(request); // osobna transakcja
         ConfirmationToken token = confirmationTokenService.createToken(user);
-        String link = "http://localhost:8080/api/auth/confirm?token=" + token.getToken();
+        String link = "http://localhost:4200/confirm-account?token=" + token.getToken();
         emailService.sendEmail(user.getEmail(), "Potwierdzenie rejestracji", buildEmail(user.getFirstName(), link));
     }
 
+    public void createUserByAdmin(User request){
+        if (userRepository.existsByEmail(request.getEmail())) {
+            throw new RuntimeException("Email already in use");
+        }
+
+        User user = new User();
+        user.setFirstName(request.getFirstName());
+        user.setLastName(request.getLastName());
+        user.setEmail(request.getEmail());
+        user.setPassword(passwordEncoder.encode(request.getPassword()));
+        user.setRole(request.getRole());
+        user.setEnabled(true);
+        userRepository.save(user);
+    }
 
     private String buildEmail(String name, String link) {
         return "<div style=\"font-family:Arial,sans-serif;font-size:16px;color:#333\">"

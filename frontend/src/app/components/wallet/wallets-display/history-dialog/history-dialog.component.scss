@@ -1,0 +1,19 @@
+.loading-spinner-container, .error-message, .no-transactions-message {
+  text-align: center;
+  padding: 10px 0;
+}
+.error-message {
+  color: red;
+}
+.mat-table {
+  width: 100%;
+}
+.mat-column-amount {
+  text-align: right; 
+}
+.positive {
+  color: #4CAF50; 
+}
+.negative {
+  color: #F44336; 
+}
